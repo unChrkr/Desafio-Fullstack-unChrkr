@@ -1,42 +1,48 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtauthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('contacts')
+@ApiTags('Contacts')
+@Controller('contact')
 export class ContactsController {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(private contactService: ContactsService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto) {
-    return this.contactsService.create(createContactDto);
+  @UseGuards(JwtauthGuard)
+  @ApiBearerAuth()
+  create(@Body() data: CreateContactDto, @Request() req) {
+    return this.contactService.create(data, req.user.id);
   }
 
   @Get()
-  findAll() {
-    return this.contactsService.findAll();
+  async findAll() {
+    return await this.contactService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.contactsService.findOne(+id);
+    return this.contactService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactsService.update(+id, updateContactDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateContactDto) {
+    return this.contactService.update(id, updateUserDto);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.contactsService.remove(+id);
+    return this.contactService.remove(id);
   }
 }

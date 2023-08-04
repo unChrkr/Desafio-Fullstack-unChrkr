@@ -5,7 +5,7 @@ export class User {
   readonly id: string;
   name: string;
   email: string;
-  readonly createdAt: Date;
+  createdAt: Date;
 
   @Exclude()
   password: string;

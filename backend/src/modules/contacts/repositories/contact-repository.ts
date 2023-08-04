@@ -7,4 +7,5 @@ export abstract class ContactsRepository {
   abstract findAll(): Promise<Contact[]>;
   abstract findOne(id: string): Promise<Contact>;
   abstract update(data: UpdateContactDto, id: string): Promise<Contact>;
+  abstract delete(id: string): Promise<void>;
 }

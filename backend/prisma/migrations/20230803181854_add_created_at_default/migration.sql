@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "contacts" ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP;

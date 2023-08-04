@@ -1,6 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { hashSync } from 'bcryptjs';
-import { Transform } from 'class-transformer';
+import { IsDate, IsEmail, IsString } from 'class-validator';
 
 export class CreateContactDto {
   @IsString()
@@ -9,12 +7,8 @@ export class CreateContactDto {
   @IsString()
   @IsEmail()
   email: string;
-
   @IsString()
-  @MinLength(8)
-  @IsNotEmpty()
-  @Transform(({ value }: { value: string }) => hashSync(value, 10), {
-    groups: ['transform'],
-  })
-  password: string;
+  phoneNumber: string;
+  @IsDate()
+  createdAt: Date;
 }
