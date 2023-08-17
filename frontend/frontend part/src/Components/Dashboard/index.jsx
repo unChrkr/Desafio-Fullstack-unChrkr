@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { DashboardContainer, StyledHeader, StyledHeader_divUpper, StyledHeader_divLower, StyledMain, StyledSpan, StyledUl, StyledLi, StyledClass, StyledDivModal, StyledCloseModalButton } from './styled'
 import { UserInfoContext } from "../../Providers/UserInfoContext"
 import Modal from 'react-modal'
@@ -16,11 +16,13 @@ export const DashboardPage = () => {
 
     const { openModal, closeModal, modal, modalUpdate, updateCloseModal, setModalUpdate, setCurrentContact } = useContext(CreateModalContext)
     const { info, exit } = useContext(UserInfoContext)
-    const { createContact, contact } = useContext(ContactContext)
+    const { createContact, contacts, getContacts } = useContext(ContactContext)
 
+    useEffect(() => {
+        getContacts()
+    }, [])
 
     const CreateContactForm = yup.object().shape({
-        title: yup.string().required(),
         name: yup.string().required(),
         email: yup.string().required(),
         phoneNumber: yup.string().required(),
@@ -55,7 +57,6 @@ export const DashboardPage = () => {
                 </StyledHeader_divUpper>
                 <StyledHeader_divLower>
                     {info != null && (<h2>Olá, {info.name}</h2>)}
-                    {info != null && (<p>{info.course_module}</p>)}
                 </StyledHeader_divLower>
             </StyledHeader>
             <StyledMain>
@@ -63,17 +64,17 @@ export const DashboardPage = () => {
                     <p>Contatos</p>
                     <button onClick={openModal}>+</button>
                 </StyledSpan>
-                {contact.length > 0 ?
+                {contacts.length > 0 ?
                     <StyledUl>
-                        {contact.map((contact) => (
+                        {contacts.map((contact) => (
                             <StyledLi key={contact.id} onClick={(event) => {
                                 event.stopPropagation()
                                 setModalUpdate(true)
                                 setCurrentContact(contact)
                             }}>
-                                <p>{contact.title}</p>
+                                <p>{contact.name}</p>
                                 <StyledClass>
-                                    <p>{contact.status}</p>
+                                    <p>{contact.email}</p>
                                 </StyledClass>
                             </StyledLi>
                         ))}

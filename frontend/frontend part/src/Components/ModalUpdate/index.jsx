@@ -11,7 +11,9 @@ import { MdClose } from "react-icons/md"
 export const ModalUpdate = () => {
 
     const UpdateContactForm = yup.object().shape({
-        status: yup.string().required(),
+        name: yup.string(),
+        email: yup.string(),
+        phoneNumber: yup.string()
     })
 
     const { setModalUpdate, currentContact, setCurrentContact } = useContext(CreateModalContext)
@@ -19,30 +21,33 @@ export const ModalUpdate = () => {
 
     const { register, handleSubmit, formState: { erros } } = useForm({
         resolver: yupResolver(UpdateContactForm),
-        defaultValues: { status: currentContact?.status }
+        defaultValues: { name: currentContact?.name, email: currentContact?.email, phoneNumber: currentContact?.phoneNumber }
     })
 
     const submit = async (formData) => {
+        console.log(formData)
 
         await updateContact(currentContact.id, formData)
         setCurrentContact(null)
         setModalUpdate(false)
     }
 
-
     return (
         <StyledDivModalUpdate>
             <form onSubmit={handleSubmit(submit)} >
-                <input type="text" disabled value={currentContact?.name} />
-                <input type="text" disabled value={currentContact?.email} />
-                <input type="text" disabled value={currentContact?.phoneNumber} />
-                <button>Atualizar contato</button>
+                <input type="text" {...register('name')} defaultValue={currentContact?.name} />
+                <input type="text" {...register('email')} defaultValue={currentContact?.email} />
+                <input type="text" {...register('phoneNumber')} defaultValue={currentContact?.phoneNumber} />
+                <button type='submit'>Atualizar contato</button>
             </form >
             <StyledCloseModalButton onClick={() => {
                 setCurrentContact(null)
                 setModalUpdate(false)
             }}><MdClose size={24} /></StyledCloseModalButton>
-            <button type='button' onClick={() => removeContact(currentContact.id)}>Excluir</button>
+            <button type='button' onClick={() => {
+                removeContact(currentContact.id);
+                setModalUpdate(false)
+            }}>Excluir</button>
         </StyledDivModalUpdate>
     )
 }

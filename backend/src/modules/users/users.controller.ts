@@ -40,4 +40,8 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
+  @Get('/contact/:id')
+  findUserContacts(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getContactsForUser(id);
+  }
 }

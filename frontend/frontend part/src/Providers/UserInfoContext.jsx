@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from 'react-toastify';
+import { api } from "../Sevices/api";
 
 
 export const UserInfoContext = createContext({})
@@ -19,7 +19,7 @@ export const UserInfoProvider = ({ children }) => {
             const userToken = localStorage.getItem('userToken')
             if (userToken) {
                 try {
-                    const response = await axios.get('https://localhost.3001', {
+                    const response = await api.post('login', {
                         headers: {
                             'Authorization': `Bearer ${userToken}`
                         }
@@ -43,7 +43,7 @@ export const UserInfoProvider = ({ children }) => {
 
     const userLogin = async (data) => {
         try {
-            const response = await axios.post('https://localhost.3001', data)
+            const response = await api.post('login', data)
             localStorage.setItem('userToken', response.data.token)
             localStorage.setItem('userId', response.data.user.id)
             setInfo(response.data.user)
@@ -52,20 +52,21 @@ export const UserInfoProvider = ({ children }) => {
 
         } catch (error) {
             toast.error('Usuário não existente')
+            console.log(error)
         }
     }
 
 
     const userRegister = async (data) => {
         try {
-            await axios.post('https://localhost.3001', data)
+            await api.post('users', data)
             navigate('/')
             toast.success('Cadastro realizado com sucesso!')
         } catch (error) {
             toast.error('Usuário já existente')
+            console.log(error)
         }
     }
-
 
     return (
         <UserInfoContext.Provider value={{ info, setInfo, userLogin, userRegister, exit, contact, setContact }}>

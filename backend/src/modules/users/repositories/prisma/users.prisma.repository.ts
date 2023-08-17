@@ -4,8 +4,8 @@ import { CreateUserDto } from '../../dto/create-user.dto';
 import { User } from '../../entities/user.entity';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateUserDto } from '../../dto/update-user.dto';
-import { GetResult } from '@prisma/client/runtime/library';
 import { plainToInstance } from 'class-transformer';
+import { Contact } from 'src/modules/contacts/entities/contact.entity';
 
 @Injectable()
 export class UsersPrismaRepository implements UsersRepository {
@@ -52,5 +52,12 @@ export class UsersPrismaRepository implements UsersRepository {
     await this.prisma.user.delete({
       where: { id },
     });
+  }
+  async findUserContacts(userId: string): Promise<Contact[]> {
+    return this.prisma.user
+      .findUnique({
+        where: { id: userId },
+      })
+      .contact();
   }
 }

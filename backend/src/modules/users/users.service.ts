@@ -6,6 +6,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
+import { Contact } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -61,5 +62,9 @@ export class UsersService {
     }
 
     return this.usersRepository.delete(id);
+  }
+
+  async getContactsForUser(userId: string): Promise<Contact[]> {
+    return this.usersRepository.findUserContacts(userId);
   }
 }
